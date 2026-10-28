@@ -3,15 +3,17 @@
  */
 
 /**
- * PartyKit host URL
- * Uses environment variable in production, localhost in development
- * Set VITE_PARTYKIT_HOST in Cloudflare Pages environment variables
+ * Game server host.
+ * - If VITE_PARTYKIT_HOST is set, it is used.
+ * - In production the game server runs in the same Cloudflare Worker as the
+ *   website, so we use the current page host.
+ * - In development we use localhost:1999.
  */
 export const PARTYKIT_HOST =
-  import.meta.env.VITE_PARTYKIT_HOST || // Production URL from env var
-  (process.env.NODE_ENV === 'production'
-    ? 'open-catan.coleschaffer.partykit.dev' // Fallback production URL
-    : 'localhost:1999'); // Development
+  import.meta.env.VITE_PARTYKIT_HOST ||
+  (process.env.NODE_ENV === 'production' && typeof window !== 'undefined'
+    ? window.location.host
+    : 'localhost:1999');
 
 /**
  * PartyKit party name for the game
